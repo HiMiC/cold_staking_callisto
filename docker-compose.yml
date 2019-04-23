@@ -1,0 +1,47 @@
+version: "3"
+
+services:
+  gethnode:
+    container_name: go-callisto
+    build: ./gethnode
+    working_dir: /root
+    command: /usr/local/bin/geth --rpc --rpcaddr 0.0.0.0 --rpcport 8545 --rpccorsdomain "*" --rpcapi "db,eth,net,web3"
+    volumes:
+      - ./data_callisto:/root/.callisto
+    ports:
+      - "8545:8545"
+      - "8546:8546"
+      - "30303:30303"
+#    networks:
+#      - front
+#    links:
+#       - db
+
+#  vote:
+#    build: ./web
+#    command: python app.py
+#    volumes:
+#     - ./web:/web
+#    ports:
+#      - "8081:80"
+#    networks:
+#      - front-tier
+#      - back-tier
+
+
+#  db:
+#    image: postgres:9.4
+#    container_name: db
+#    volumes:
+#      - "db-data:/var/lib/postgresql/data"
+#    networks:
+#      - back-tier
+
+
+
+#volumes:
+#  db-data:
+
+#networks:
+#  front-tier:
+#  back-tier:
