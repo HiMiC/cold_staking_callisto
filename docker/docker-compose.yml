@@ -3,19 +3,54 @@ version: "3"
 services:
   gethnode:
     container_name: go-callisto
+    mem_limit: "10G"
     build: ./gethnode
     working_dir: /root
     command: /usr/local/bin/geth --rpc --rpcaddr 0.0.0.0 --rpcport 8545 --rpccorsdomain "*" --rpcapi "db,eth,net,web3"
     volumes:
-      - ./data_callisto:/root/.callisto
+      - ./counteiner_data/geth:/root/.callisto
     ports:
       - "8545:8545"
       - "8546:8546"
       - "30303:30303"
 #    networks:
 #      - front
-#    links:
-#       - db
+
+    depends_on:
+      - db
+    links:
+       - db
+       - gethnode
+
+  db:
+    build: mysql/
+    container_name: "mysql"
+    mem_limit: "10G"
+    environment:
+      MYSQL_DATABASE: 'my-app-db'
+      MYSQL_USER: 'root'
+      MYSQL_PASSWORD: 'password'
+      MYSQL_ROOT_PASSWORD: 'password'
+    ports:
+      - "3311:3306"
+    volumes:
+      - ./counteiner_data/mysqldir/:/home/mysql:rw
+      - ./mysql/config/my.cnf:/etc/mysql/my.cnf:rw
+    links:
+      - db
+      - gethnode
+
+  web:
+    build: web/
+    container_name: "web"
+    command: python /code/manage.py migrate --noinput && python manage.py collectstatic && python /code/manage.py runserver 0.0.0.0:8000
+    volumes:
+      - ./web/code/:/code
+    ports:
+      - 8000:8000
+    depends_on:
+      - db
+      - gethnode
 
 #  vote:
 #    build: ./web
@@ -25,23 +60,4 @@ services:
 #    ports:
 #      - "8081:80"
 #    networks:
-#      - front-tier
-#      - back-tier
-
-
-#  db:
-#    image: postgres:9.4
-#    container_name: db
-#    volumes:
-#      - "db-data:/var/lib/postgresql/data"
-#    networks:
-#      - back-tier
-
-
-
-#volumes:
-#  db-data:
-
-#networks:
-#  front-tier:
-#  back-tier:
+#
