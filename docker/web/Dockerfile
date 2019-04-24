@@ -13,9 +13,13 @@ ADD ./code/requirements.txt /code/
 RUN pip install --upgrade pip && pip install -r requirements.txt
 
 RUN apt update
-RUN apt upgrade
-RUN apt install -y bash mariadb-dev mariadb-client mariadb-libs python3-dev build-base
-RUN apt install -y mariadb-client-libs
+RUN apt -y upgrade
+RUN apt install -y bash libmariadbclient-dev-compat mariadb-client python3-dev
+RUN apt install -y python-mysqldb
+RUN pip install mysqlclient
+
+#RUN apt install -y bash mariadb-dev mariadb-client mariadb-libs python3-dev build-base
+#RUN apt install -y mariadb-client-libs
 #RUN apk add --no-cache bash mariadb-dev mariadb-client mariadb-libs python3-dev build-base
 #RUN apk -q --no-cache add mariadb-client-libs
 

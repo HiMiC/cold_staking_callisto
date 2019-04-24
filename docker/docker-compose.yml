@@ -2,8 +2,7 @@ version: "3"
 
 services:
   gethnode:
-    container_name: go-callisto
-    mem_limit: "10G"
+    container_name: gethnode
     build: ./gethnode
     working_dir: /root
     command: /usr/local/bin/geth --rpc --rpcaddr 0.0.0.0 --rpcport 8545 --rpccorsdomain "*" --rpcapi "db,eth,net,web3"
@@ -15,17 +14,14 @@ services:
       - "30303:30303"
 #    networks:
 #      - front
-
     depends_on:
       - db
-    links:
-       - db
-       - gethnode
+#    links:
+#      - db
 
   db:
     build: mysql/
-    container_name: "mysql"
-    mem_limit: "10G"
+    container_name: "db"
     environment:
       MYSQL_DATABASE: 'my-app-db'
       MYSQL_USER: 'root'
@@ -36,21 +32,28 @@ services:
     volumes:
       - ./counteiner_data/mysqldir/:/home/mysql:rw
       - ./mysql/config/my.cnf:/etc/mysql/my.cnf:rw
-    links:
-      - db
-      - gethnode
+#    links:
+#      - gethnode
+    networks:
+      - front
 
   web:
     build: web/
     container_name: "web"
-    command: python /code/manage.py migrate --noinput && python manage.py collectstatic && python /code/manage.py runserver 0.0.0.0:8000
+#    command: python /code/manage.py migrate --noinput && python manage.py collectstatic && python /code/manage.py runserver 0.0.0.0:8000
+    command: python /code/manage.py runserver 0.0.0.0:8000
     volumes:
       - ./web/code/:/code
     ports:
       - 8000:8000
+#    links:
+#      - db
+#      - gethnode
     depends_on:
       - db
       - gethnode
+    networks:
+      - front
 
 #  vote:
 #    build: ./web
@@ -61,3 +64,6 @@ services:
 #      - "8081:80"
 #    networks:
 #
+
+networks:
+  front:
