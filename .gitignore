@@ -1,1 +1,2 @@
-data_callisto
+docker/counteiner_data/geth
+docker/counteiner_data/mysqldir
