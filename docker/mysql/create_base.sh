@@ -1,7 +1,10 @@
 #!/usr/bin/env bash
 
-MYPASSWD=$RANDOM$RANDOM$RANDOM
-mysqladmin -u root password $MYPASSWD;
+password=$(cat /var/log/mysql/error.log | grep "A temporary password is generated for" | tail -1 | sed -n 's/.*root@localhost: //p')
+
+MYPASSWD=$password
+#mysqladmin -u root password $MYPASSWD;
+#mysql -uroot -p$password -Bse "ALTER USER 'root'@'localhost' IDENTIFIED BY '$MYPASSWD';"
 
 mysql -uroot -p$MYPASSWD -e "CREATE DATABASE IF NOT EXISTS domain_statistic DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci;"
 mysql -uroot -p$MYPASSWD -e "CREATE USER 'pma'@'%' IDENTIFIED BY 'pma';"

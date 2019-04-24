@@ -29,10 +29,12 @@ ADD config/locales /var/lib/locales/supported.d/local
 RUN locale-gen
 
 ADD config/my.cnf /etc/mysql/my.cnf
+RUN chmod 755 /etc/mysql/my.cnf
 #RUN addgroup --gid 950 mysql || true
 #RUN adduser --quiet --system --disabled-login --no-create-home --uid 950 --gid 950  mysql || true
 RUN mkdir -p /home/mysql
-RUN mysqld --initialize
+RUN mysqld --initialize-insecure --datadir=/home/mysql/
+# mysql -uroot -p
 
 # install minit
 RUN mkdir -p /etc/minit
@@ -59,7 +61,7 @@ CMD ["/sbin/minit"]
 #docker run -d -it -p 0.0.0.0:3311:3306 --name=kz mysqltest
 #docker exec -it kz bash
 #
-##delete
+#DELETE
 #docker stop kz
 #docker rm kz
 #docker rmi mysqltest
