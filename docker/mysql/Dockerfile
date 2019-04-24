@@ -57,14 +57,14 @@ EXPOSE 3306
 CMD ["/sbin/minit"]
 # EOF
 
-#docker build -t mysqltest .
-#docker run -d -it -p 0.0.0.0:3311:3306 --name=kz mysqltest
-#docker exec -it kz bash
+# docker build -t mysqltest .
+# docker run -d -it -p 0.0.0.0:3311:3306 --name=kz mysqltest
+# docker exec -it kz bash
 #
 #DELETE
-#docker stop kz
-#docker rm kz
-#docker rmi mysqltest
+# docker stop kz
+# docker rm kz
+# docker rmi mysqltest
 
 
 
