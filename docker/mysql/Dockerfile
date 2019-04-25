@@ -45,7 +45,8 @@ RUN set -ex; \
 # gpg: key 5072E1F5: public key "MySQL Release Engineering <mysql-build@oss.oracle.com>" imported
 	key='A4A9406876FCBD3C456770C88C718D3B5072E1F5'; \
 	export GNUPGHOME="$(mktemp -d)"; \
-	gpg --batch --keyserver hkp://ipv4.pool.sks-keyservers.net:80 --recv-keys "$key"; \
+    gpg --keyserver hkp://p80.pool.sks-keyservers.net:80 --recv-keys "$key" || \
+    gpg --keyserver hkp://ipv4.pool.sks-keyservers.net:80 --recv-keys "$key";  \
 	gpg --batch --export "$key" > /etc/apt/trusted.gpg.d/mysql.gpg; \
 	gpgconf --kill all; \
 	rm -rf "$GNUPGHOME"; \
@@ -83,7 +84,8 @@ RUN chmod 700 /var/lib/mysql-files/
 
 # создаем базу clo_statistic
 ADD create_base.sh /root/create_base.sh
-RUN chmod 755 /root/create_base.sh && /root/create_base.sh
+RUN chmod 755 /root/create_base.sh
+# /root/create_base.sh
 
 COPY docker-entrypoint.sh /usr/local/bin/
 

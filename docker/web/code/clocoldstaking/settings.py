@@ -81,12 +81,12 @@ WSGI_APPLICATION = 'clocoldstaking.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        "OPTIONS": {"read_default_file": "./my.cnf"},
-        # 'NAME': 'clo_statistic',
-        # 'USER': 'clo_statistic',
-        # 'PASSWORD': 'clo_statistic',
-        # 'HOST': 'db',  # Or an IP Address that your DB is hosted on
-        # 'PORT': '3306',
+        # "OPTIONS": {"read_default_file": "./my.cnf"},
+        'NAME': 'clo_statistic',
+        'USER': 'clo_statistic',
+        'PASSWORD': 'clo_statistic',
+        'HOST': 'db',  # Or an IP Address that your DB is hosted on
+        'PORT': '3306',
     }
 }
 

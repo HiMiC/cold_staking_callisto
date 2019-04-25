@@ -24,22 +24,16 @@ services:
     container_name: "db"
     environment:
       MYSQL_DATABASE: 'clo_statistic'
-      MYSQL_USER: 'root'
-      MYSQL_PASSWORD: 'password'
+      MYSQL_USER: 'clo_statistic'
+      MYSQL_PASSWORD: 'clo_statistic'
       MYSQL_ROOT_PASSWORD: 'password'
     networks:
       - front
     ports:
-      - "3311:3306"
-    volumes:
-#      - ./mysql/config/:/etc/mysql/:rw
-#      - ./counteiner_data/mysqldir/:/var/lib/mysql/:rw
-      - ./counteiner_data/log:/var/log/mysql
+      - "3306:3306"
 #    volumes:
-#      - ./counteiner_data/mysqldir/:/home/mysql:rw
-#      - ./mysql/config/my.cnf:/etc/mysql/my.cnf:rw
-#    links:
-#      - gethnode
+#      - ./counteiner_data/log:/var/log/mysql
+
 
 
   web:
@@ -61,15 +55,7 @@ services:
     networks:
       - front
 
-#  vote:
-#    build: ./web
-#    command: python app.py
-#    volumes:
-#     - ./web:/web
-#    ports:
-#      - "8081:80"
-#    networks:
-#
+
 
 networks:
   front:

@@ -2,6 +2,9 @@
 set -eo pipefail
 shopt -s nullglob
 
+
+
+
 # if command starts with an option, prepend mysqld
 if [ "${1:0:1}" = '-' ]; then
 	set -- mysqld "$@"
@@ -214,4 +217,18 @@ if [ "$1" = 'mysqld' -a -z "$wantHelp" ]; then
 	fi
 fi
 
+#if ! find /var/lib/mysql/clo_statistic/* -maxdepth 0 -empty | xargs -r false; then
+#if ! [ -d /var/lib/mysql/clo_statistic/ ]; then
+#    echo "Create base"
+#    mysqld --initialize || true
+#    # DEPRECATE mysql_install_db --basedir=/usr || true
+#    mysqld --verbose --external-locking
+#    /etc/init.d/mysqld start
+#    sleep 10
+#    exec /root/create_base.sh;
+#     /etc/init.d/mysqld stop
+#fi
+
 exec "$@"
+
+

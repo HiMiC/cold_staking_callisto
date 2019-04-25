@@ -17,6 +17,7 @@ RUN apt -y upgrade
 RUN apt install -y bash libmariadbclient-dev-compat mariadb-client python3-dev
 RUN apt install -y python-mysqldb
 RUN pip install mysqlclient
+RUN pip install -r requirements.txt
 RUN   apt-get clean && \
   rm -rf /tmp/* /var/lib/apt/lists/* /var/tmp/*;
 
