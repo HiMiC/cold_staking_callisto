@@ -8,11 +8,11 @@
 
 #mysqladmin -u root password $MYPASSWD;
 
-mysql -uroot -p$$MYSQL_ROOT_PASSWORD -e "CREATE DATABASE IF NOT EXISTS clo_statistic DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci;"
-mysql -uroot -p$$MYSQL_ROOT_PASSWORD -e "CREATE USER 'clo_statistic'@'%' IDENTIFIED WITH mysql_native_password BY 'clo_statistic';"
-mysql -uroot -p$$MYSQL_ROOT_PASSWORD -e "GRANT ALL PRIVILEGES ON * . * TO 'clo_statistic'@'%';"
-mysql -uroot -p$$MYSQL_ROOT_PASSWORD -e "GRANT ALL PRIVILEGES ON * . * TO 'clo_statistic'@'localhost';"
-mysql -uroot -p$$MYSQL_ROOT_PASSWORD -e "FLUSH PRIVILEGES;"
+mysql -uroot -p$MYSQL_ROOT_PASSWORD -e "CREATE DATABASE IF NOT EXISTS clo_statistic DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci;"
+mysql -uroot -p$MYSQL_ROOT_PASSWORD -e "CREATE USER 'clo_statistic'@'%' IDENTIFIED WITH mysql_native_password BY 'clo_statistic';"
+mysql -uroot -p$MYSQL_ROOT_PASSWORD -e "GRANT ALL PRIVILEGES ON * . * TO 'clo_statistic'@'%';"
+mysql -uroot -p$MYSQL_ROOT_PASSWORD -e "GRANT ALL PRIVILEGES ON * . * TO 'clo_statistic'@'localhost';"
+mysql -uroot -p$MYSQL_ROOT_PASSWORD -e "FLUSH PRIVILEGES;"
 
 #mysql -uroot -p$MYPASSWD -e "CREATE DATABASE IF NOT EXISTS clo_statistic DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci;"
 #mysql -uroot -p$MYPASSWD -e "CREATE USER 'clo_statistic'@'%' IDENTIFIED WITH mysql_native_password BY 'clo_statistic';"

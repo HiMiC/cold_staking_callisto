@@ -12,10 +12,10 @@ services:
       - "8545:8545"
       - "8546:8546"
       - "30303:30303"
-#    networks:
-#      - front
-    depends_on:
-      - db
+    networks:
+      - front
+#    depends_on:
+#      - db
 #    links:
 #      - db
 
@@ -27,6 +27,8 @@ services:
       MYSQL_USER: 'root'
       MYSQL_PASSWORD: 'password'
       MYSQL_ROOT_PASSWORD: 'password'
+    networks:
+      - front
     ports:
       - "3311:3306"
     volumes:
@@ -38,8 +40,7 @@ services:
 #      - ./mysql/config/my.cnf:/etc/mysql/my.cnf:rw
 #    links:
 #      - gethnode
-    networks:
-      - front
+
 
   web:
     build: web/

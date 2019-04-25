@@ -81,8 +81,9 @@ RUN mkdir /var/lib/mysql-files
 RUN chown -R mysql:mysql /var/lib/mysql-files/
 RUN chmod 700 /var/lib/mysql-files/
 
+# создаем базу clo_statistic
 ADD create_base.sh /root/create_base.sh
-RUN chmod 755 /root/create_base.sh
+RUN chmod 755 /root/create_base.sh && /root/create_base.sh
 
 COPY docker-entrypoint.sh /usr/local/bin/
 
