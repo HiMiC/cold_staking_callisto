@@ -1,0 +1,31 @@
+{% load static %}
+<!doctype html>
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="{% static "vendor/bootstrap/css/bootstrap.min.css" %}">
+    <link rel="stylesheet" href="{% static "sticky-footer.css" %}" >
+
+    <title>Hello, world!</title>
+  </head>
+  <body>
+
+{% include 'header.html' %}
+
+
+{% block content %}
+{% endblock %}
+
+
+{% include 'footer.html' %}
+
+<!-- JavaScript files-->
+<script src="{% static "vendor/jquery/jquery.min.js" %}"></script>
+<script src="{% static "vendor/bootstrap/js/bootstrap.min.js" %}"></script>
+
+</body>
+</html>
