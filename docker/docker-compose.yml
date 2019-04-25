@@ -23,15 +23,19 @@ services:
     build: mysql/
     container_name: "db"
     environment:
-      MYSQL_DATABASE: 'my-app-db'
+      MYSQL_DATABASE: 'clo_statistic'
       MYSQL_USER: 'root'
       MYSQL_PASSWORD: 'password'
       MYSQL_ROOT_PASSWORD: 'password'
     ports:
       - "3311:3306"
     volumes:
-      - ./counteiner_data/mysqldir/:/home/mysql:rw
-      - ./mysql/config/my.cnf:/etc/mysql/my.cnf:rw
+#      - ./mysql/config/:/etc/mysql/:rw
+#      - ./counteiner_data/mysqldir/:/var/lib/mysql/:rw
+      - ./counteiner_data/log:/var/log/mysql
+#    volumes:
+#      - ./counteiner_data/mysqldir/:/home/mysql:rw
+#      - ./mysql/config/my.cnf:/etc/mysql/my.cnf:rw
 #    links:
 #      - gethnode
     networks:
@@ -41,7 +45,8 @@ services:
     build: web/
     container_name: "web"
 #    command: python /code/manage.py migrate --noinput && python manage.py collectstatic && python /code/manage.py runserver 0.0.0.0:8000
-    command: python /code/manage.py runserver 0.0.0.0:8000
+#    command: ./docker-entrypoint.sh
+    entrypoint: /code/docker-entrypoint.sh
     volumes:
       - ./web/code/:/code
     ports:
