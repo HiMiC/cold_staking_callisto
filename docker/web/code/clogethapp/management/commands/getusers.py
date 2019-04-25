@@ -50,6 +50,12 @@ class Command(BaseCommand):
         # pprint(w3.eth.blockNumber)
         # exit()
         w3 = Web3(HTTPProvider('http://gethnode:8545'))
+
+        # if not w3.isConnected():
+        if w3.isConnected() == False:
+            exit("Нет соединения с блокчейном")
+
+
         # block=w3.eth.getBlock("0x246dbee1f0e3be212be2a4ca899a04924b78ae65b775132f301271dce7e1bd84")
         # # pprint(block)
         # pprint(block['extraData'])
@@ -78,7 +84,8 @@ class Command(BaseCommand):
                     block = row[0]
                     # pprint(block)
                     getblock = w3.eth.getBlock(block)
-
+                    # pprint(getblock)
+                    # exit()
 
                     extraData = str(w3.eth.getBlock(w3.eth.blockNumber)['extraData']).replace("b'", '').replace("'",'')
                     created = Block.objects.get_or_create(
