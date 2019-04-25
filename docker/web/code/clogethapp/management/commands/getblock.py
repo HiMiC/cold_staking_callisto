@@ -54,6 +54,99 @@ class Command(BaseCommand):
         # if not w3.isConnected():
         if w3.isConnected() == False:
             exit("Нет соединения с блокчейном")
+        if w3.eth.syncing != False:
+            exit("Синхронизируется блокчейн")
+
+
+            # s = eth.syncing
+            # "\n------------ GETH SYNCING PROGRESS\nprogress: " + (
+            #             s.currentBlock / s.highestBlock * 100) + " %\nblocks left to parse: " + (
+            #             s.highestBlock - s.currentBlock) + "\ncurrent Block: " + s.currentBlock + " of " + s.highestBlock
+
+
+
+# Хардфорк появится на блоке №1400000 в период с 11 по 12 ноября.
+# Поэтому нет смысла перебирать другие блоки
+#         pprint(w3.eth.getBlock(1400000))
+        # pprint(w3.eth.blockNumber)
+        # pprint(w3.eth.syncing.currentBlock)
+        # pprint(w3.eth.syncing.highestBlock)
+        # exit()
+        i = 0
+        i2 = 0
+        block_first = 1400000
+        block_last = w3.eth.blockNumber
+        block_count = block_last - block_first
+
+        for x in range(block_first, w3.eth.blockNumber):
+            pprint(str(round((i / block_count * 100),2))+"%")
+            i = i + 1
+            # print(str(x) + " из " + str(block_last))
+            getblock = w3.eth.getBlock(x)
+            # pprint(block)
+            # pprint(block['extraData'])
+            # pprint(Web3.toText(block['extraData']))
+            # pprint(block['transactions'].count)
+            for trx_hash in getblock['transactions']:
+                # pprint(x2)
+                aaaa = w3.eth.getTransactionReceipt(trx_hash)
+                aaaa = dict(aaaa)
+                # pprint(aaaa)
+                # aaaa = w3.eth.getTransactionReceipt(trx_hash)
+                bbbb = w3.eth.getTransaction(trx_hash)
+                bbbb = dict(bbbb)
+                input_text = ''
+                if aaaa['from'] == '0xd813419749b3c2cdc94a2f9cfcf154113264a9d6' or aaaa[
+                    'to'] == '0xd813419749b3c2cdc94a2f9cfcf154113264a9d6':
+                    # {'blockHash': HexBytes('0x27ca011db39fda4ef5a7746d75a4345955cc19da08cf724f1ea11ab1456101c3'),
+                    #  'blockNumber': 1400053,
+                    #  'contractAddress': None,
+                    #  'cumulativeGasUsed': 63691,
+                    #  'from': '0xa30d4c9699b5aa95bde5ed070cc37c75e9a8416c',
+                    #  'gasUsed': 21691,
+                    #  'logs': [],
+                    #  'logsBloom': HexBytes(
+                    #      '0x00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000'),
+                    #  'status': 0,
+                    #  'to': '0xd813419749b3c2cdc94a2f9cfcf154113264a9d6',
+                    #  'transactionHash': HexBytes('0x7bb1037678f3420b0da3b5dd29a33fcda7155ef16727fa2109317b047ffb7f37'),
+                    #  'transactionIndex': 2}
+                    if bbbb['input'] == '0x1f288efb' or bbbb['input'] == '0x':
+                        input_text = 'Deposit'
+                    if bbbb['input'] == '0x4e71d92d':
+                        input_text = 'Claim (Reward only)'
+                    if bbbb['input'] == '0xcd948855':
+                        input_text = 'Withdraw (Stake deposit + Reward)'
+
+                    created2 = Transaction.objects.get_or_create(
+                        blockNumber=aaaa['blockNumber'],
+                        blockHash='0x' + str(binascii.b2a_hex(aaaa['blockHash'])).replace("b'", '').replace("'",
+                                                                                                            ''),
+                        tx='0x' + str(binascii.b2a_hex(aaaa['transactionHash'])).replace("b'",
+                                                                                         '').replace(
+                            "'", ''),
+                        addr_from=aaaa['from'],
+                        addr_to=aaaa['to'],
+                        gasUsed=aaaa['gasUsed'],
+                        gas=bbbb['gas'],
+                        gasPrice=bbbb['gasPrice'],
+                        input=bbbb['input'],
+                        input_text=input_text,
+                        value=str(w3.fromWei(bbbb['value'], 'ether')),
+                        # timestamp=w3.eth.getBlock(aaaa['blockNumber']).timestamp,
+                        timestamp=getblock.timestamp,
+                    )
+                    # i2 = i2 + 1
+                    # pprint(str(i) + ' ' + str(i2) + ' '
+                    #        # + str(w3.eth.getBlock(aaaa['blockNumber']).timestamp)
+                    #        + str(w3.eth.blockNumber) + ' '
+                    #        + str(datetime.datetime.fromtimestamp(
+                    #     w3.eth.getBlock(aaaa['blockNumber']).timestamp).isoformat())
+                    #        + ' ' + str(w3.fromWei(bbbb['value'], 'ether')))
+                    #
+                    # pprint(aaaa)
+                    # pprint('Адрес контракта')
+                    # exit()
 
 
         # block=w3.eth.getBlock("0x246dbee1f0e3be212be2a4ca899a04924b78ae65b775132f301271dce7e1bd84")
@@ -70,88 +163,5 @@ class Command(BaseCommand):
         #
         # exit()
 
-        fname = "0xd813419749b3c2cdc94a2f9cfcf154113264a9d6-transactions-1554288562.csv"
-        if os.path.isfile(fname):
-            pprint('Фаил существует ' + fname)
-
-            i = 0
-            i2 = 0
-
-            with open(fname, 'r', newline='') as csvfile:
-
-                spamreader = csv.reader(csvfile, delimiter=',', quoting=csv.QUOTE_NONE)
-                for row in spamreader:
-                    block = row[0]
-                    # pprint(block)
-                    getblock = w3.eth.getBlock(block)
-                    # pprint(getblock)
-                    # exit()
-
-                    extraData = str(w3.eth.getBlock(w3.eth.blockNumber)['extraData']).replace("b'", '').replace("'",'')
-                    created = Block.objects.get_or_create(
-                        block_hash=row[0],
-                        addr_from=row[1],
-                        addr_to=row[2],
-                        input_date=row[3],
-                        extraData=extraData,
-
-                    )
-
-                    i = i + 1
-
-                    if getblock is None:
-                        pprint(getblock)
-                        exit('NOT getblock')
-
-                    gettransactions = getblock.transactions
-                    # pprint(getblock.transactions)
-
-                    for trx_hash in gettransactions:
-
-                        aaaa = w3.eth.getTransactionReceipt(trx_hash)
-                        bbbb = w3.eth.getTransaction(trx_hash)
-                        bbbb = dict(bbbb)
-                        input_text = ''
-                        if aaaa['from'] == '0xd813419749b3c2cdc94a2f9cfcf154113264a9d6' or aaaa[
-                            'to'] == '0xd813419749b3c2cdc94a2f9cfcf154113264a9d6':
-                            if bbbb['input'] == '0x1f288efb' or bbbb['input'] == '0x':
-                                input_text = 'Deposit'
-                            if bbbb['input'] == '0x4e71d92d':
-                                input_text = 'Claim (Reward only)'
-                            if bbbb['input'] == '0xcd948855':
-                                input_text = 'Withdraw (Stake deposit + Reward)'
-
-                            created2 = Transaction.objects.get_or_create(
-                                blockNumber=aaaa['blockNumber'],
-                                blockHash='0x' + str(binascii.b2a_hex(aaaa['blockHash'])).replace("b'", '').replace("'",
-                                                                                                                    ''),
-                                tx='0x' + str(binascii.b2a_hex(aaaa['transactionHash'])).replace("b'",
-                                                                                                 '').replace(
-                                    "'", ''),
-                                addr_from=aaaa['from'],
-                                addr_to=aaaa['to'],
-                                gasUsed=aaaa['gasUsed'],
-                                gas=bbbb['gas'],
-                                gasPrice=bbbb['gasPrice'],
-                                input=bbbb['input'],
-                                input_text=input_text,
-                                value=str(w3.fromWei(bbbb['value'], 'ether')),
-                                # timestamp=w3.eth.getBlock(aaaa['blockNumber']).timestamp,
-                                timestamp=getblock.timestamp,
-                            )
-                            i2 = i2 + 1
-                            pprint(str(i) + ' ' + str(i2) + ' '
-                                   # + str(w3.eth.getBlock(aaaa['blockNumber']).timestamp)
-                                    + str(w3.eth.blockNumber) +' '
-                                   + str(datetime.datetime.fromtimestamp(
-                                w3.eth.getBlock(aaaa['blockNumber']).timestamp).isoformat())
-                                   + ' ' + str(w3.fromWei(bbbb['value'], 'ether')))
-
-
-
-
-
-        else:
-            pprint('Фаил не существует ' + fname)
 
         self.stdout.write(self.style.SUCCESS('Successfully closed poll'))
