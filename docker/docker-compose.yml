@@ -5,15 +5,16 @@ services:
     container_name: gethnode
     build: ./gethnode
     working_dir: /root
-    command: /usr/local/bin/geth --rpc --rpcaddr 0.0.0.0 --rpcport 8545 --rpccorsdomain "*" --rpcapi "db,eth,net,web3"
+    command: /usr/local/bin/geth --syncmode "full" --rpc --rpcaddr 0.0.0.0 --rpcport 8545 -rpcapi="db,eth,net,web3,personal" --rpccorsdomain "*" --wsaddr 0.0.0.0 --wsport 8546 --wsapi="db,eth,net,web3,personal" --verbosity 9 console 2>> /tmp/eth.log
     volumes:
       - ./counteiner_data/geth:/root/.callisto
+    networks:
+      - front
     ports:
       - "8545:8545"
       - "8546:8546"
       - "30303:30303"
-    networks:
-      - front
+
 #    depends_on:
 #      - db
 #    links:

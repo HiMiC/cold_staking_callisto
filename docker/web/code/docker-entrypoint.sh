@@ -10,7 +10,7 @@ echo "Collect static files"
 python manage.py collectstatic --noinput
 
 # ждем пока БД загрузится
-sleep 20
+sleep 30
 # Apply database migrations
 echo "Apply database migrations"
 python manage.py migrate

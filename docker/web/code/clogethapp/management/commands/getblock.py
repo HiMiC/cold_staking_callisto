@@ -76,7 +76,7 @@ class Command(BaseCommand):
                 spamreader = csv.reader(csvfile, delimiter=',', quoting=csv.QUOTE_NONE)
                 for row in spamreader:
                     block = row[0]
-                    # pprint(block)
+                    pprint(block)
                     getblock = w3.eth.getBlock(block)
 
 
