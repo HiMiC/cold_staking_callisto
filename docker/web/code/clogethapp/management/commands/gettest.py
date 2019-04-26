@@ -81,10 +81,10 @@ class Command(BaseCommand):
         bbbb = dict(bbbb)
         pprint(bbbb)
 
-        pprint(w3.toChecksumAddress('0xae555ddf81a00061716f0b50a4ad5f2449c42bb1'))
-        pprint(w3.eth.getBalance(w3.toChecksumAddress('0xae555ddf81a00061716f0b50a4ad5f2449c42bb1')))
+        pprint(w3.toChecksumAddress('0x0073cf1b9230cf3ee8cab1971b8dbef21ea7b595'))
+        pprint(w3.eth.getBalance(w3.toChecksumAddress('0x0073cf1b9230cf3ee8cab1971b8dbef21ea7b595')))
         # pprint(w3.eth.getBalance(w3.toChecksumAddress('0xae555ddf81a00061716f0b50a4ad5f2449c42bb1'),1593176))
-        r, r2 = w3.manager.request_blocking( "eth_getBalance",[w3.toChecksumAddress('0xae555ddf81a00061716f0b50a4ad5f2449c42bb1'), 1593176],)
+        r, r2 = w3.manager.request_blocking( "eth_getBalance",[w3.toChecksumAddress('0x0073cf1b9230cf3ee8cab1971b8dbef21ea7b595'), 255683],)
         pprint(r)
         pprint(r2)
 
