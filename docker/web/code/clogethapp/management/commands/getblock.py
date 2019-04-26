@@ -48,24 +48,33 @@ class Command(BaseCommand):
     #     parser.add_argument('poll_id', nargs='+', type=int)
 
     def handle(self, *args, **options):
+
+        WARNING ='\033[93m'
+        FAIL = '\033[91m'
+        ENDC='\033[0m'
         # pprint(w3.eth.blockNumber)
         # exit()
-        w3 = Web3(HTTPProvider('http://gethnode:8545'))
-
+        geth_host = 'http://gethnode:8545'
+        w3 = Web3(HTTPProvider(geth_host))
+        # exit()
         # if not w3.isConnected():
         if w3.isConnected() == False:
-            exit("Нет соединения с блокчейном")
+            exit(FAIL+"Нет соединения с блокчейном "+geth_host+ENDC)
         if w3.eth.syncing != False:
-            exit("Синхронизируется блокчейн")
+            # pprint(w3.eth.blockNumber)
+            # pprint(w3.eth.syncing)
+            # pprint(w3.eth.syncing.currentBlock)
+            # pprint(w3.eth.syncing.highestBlock)
+            procent = str(round((w3.eth.syncing.currentBlock / w3.eth.syncing.highestBlock * 100), 2)) + "%"
+            exit(WARNING + "ОСТАНОВЛЕНО Синхронизируется блокчейн до текущего состояния: " + procent
+                 +" - "+str(w3.eth.syncing.currentBlock) +" из "
+                 + str(w3.eth.syncing.highestBlock)
+                 +ENDC)
 
+        # Хардфорк появится на блоке №1400000 в период с 11 по 12 ноября.
+        # Поэтому нет смысла перебирать другие блоки
+        #         pprint(w3.eth.getBlock(1400000))
 
-# Хардфорк появится на блоке №1400000 в период с 11 по 12 ноября.
-# Поэтому нет смысла перебирать другие блоки
-#         pprint(w3.eth.getBlock(1400000))
-        # pprint(w3.eth.blockNumber)
-        # pprint(w3.eth.syncing.currentBlock)
-        # pprint(w3.eth.syncing.highestBlock)
-        # exit()
         i = 0
         i2 = 0
         block_first = 1400000
@@ -77,7 +86,7 @@ class Command(BaseCommand):
 
         for x in range(block_first, w3.eth.blockNumber):
 
-            pprint(str(round((i / block_count * 100),2))+"%")
+            pprint(str(round((i / block_count * 100), 2)) + "%")
             i = i + 1
             # print(str(x) + " из " + str(block_last))
             start_time_get_block = time.time()
@@ -93,10 +102,10 @@ class Command(BaseCommand):
                 start_time_get_transaction_aaaa = time.time()
                 aaaa = w3.eth.getTransactionReceipt(trx_hash)
                 if debug2:
-                    pprint("TX start_time_get_transaction_aaaa: " + str((time.time() - start_time_get_transaction_aaaa)))
+                    pprint(
+                        "TX start_time_get_transaction_aaaa: " + str((time.time() - start_time_get_transaction_aaaa)))
                 aaaa = dict(aaaa)
                 # pprint(aaaa)
-
 
                 if aaaa['from'] == '0xd813419749b3c2cdc94a2f9cfcf154113264a9d6' or aaaa[
                     'to'] == '0xd813419749b3c2cdc94a2f9cfcf154113264a9d6':
@@ -139,7 +148,7 @@ class Command(BaseCommand):
                     obj, created = Transaction.objects.get_or_create(blockNumber=aaaa['blockNumber'],
                                                                      transactionIndex=bbbb['transactionIndex'],
                                                                      # value=str(w3.fromWei(bbbb['value'], 'ether'))
-                                                                    )
+                                                                     )
                     # obj, created = Transaction.objects.get_or_create(blockNumber=aaaa['blockNumber'],
                     #                                                  gasUsed=aaaa['gasUsed'],
                     #                                                  gas=bbbb['gas'],
@@ -147,30 +156,29 @@ class Command(BaseCommand):
                     #                                                      )
                     pprint("БД проверка записи: " + str((time.time() - start_time_get_or_create)))
 
-
                     if created:
                         pprint("запись не существовала " + str(aaaa['blockNumber']))
                         start_time_created = time.time()
 
-                        obj.blockNumber=aaaa['blockNumber']
-                        obj.transactionIndex=bbbb['transactionIndex']
-                        obj.contractAddress=aaaa['contractAddress']
+                        obj.blockNumber = aaaa['blockNumber']
+                        obj.transactionIndex = bbbb['transactionIndex']
+                        obj.contractAddress = aaaa['contractAddress']
 
-                        obj.status=aaaa['status']
-                        obj.blockHash='0x' + str(binascii.b2a_hex(aaaa['blockHash'])).replace("b'", '').replace("'",
-                                                                                                                '')
-                        obj.tx='0x' + str(binascii.b2a_hex(aaaa['transactionHash'])).replace("b'",'').replace(
-                                "'", '')
-                        obj.addr_from=aaaa['from']
-                        obj.addr_to=aaaa['to']
-                        obj.gasUsed=aaaa['gasUsed']
-                        obj.gas=bbbb['gas']
-                        obj.gasPrice=bbbb['gasPrice']
-                        obj.input=bbbb['input']
-                        obj.input_text=input_text
+                        obj.status = aaaa['status']
+                        obj.blockHash = '0x' + str(binascii.b2a_hex(aaaa['blockHash'])).replace("b'", '').replace("'",
+                                                                                                                  '')
+                        obj.tx = '0x' + str(binascii.b2a_hex(aaaa['transactionHash'])).replace("b'", '').replace(
+                            "'", '')
+                        obj.addr_from = aaaa['from']
+                        obj.addr_to = aaaa['to']
+                        obj.gasUsed = aaaa['gasUsed']
+                        obj.gas = bbbb['gas']
+                        obj.gasPrice = bbbb['gasPrice']
+                        obj.input = bbbb['input']
+                        obj.input_text = input_text
                         # obj.value=str(w3.fromWei(bbbb['value'], 'ether'))
-                        obj.value=str(w3.fromWei(bbbb['value'], 'ether'))
-                        obj.timestamp=getblock.timestamp
+                        obj.value = str(w3.fromWei(bbbb['value'], 'ether'))
+                        obj.timestamp = getblock.timestamp
                         obj.save()
                         #
                         pprint(bbbb['value'])
@@ -183,18 +191,13 @@ class Command(BaseCommand):
                     else:
                         pprint(aaaa)
                         pprint(bbbb)
-                        pprint("запись существовала "+ str(aaaa['blockNumber']))
-                        pprint("Проверка индексов в БД. при новом запуске чистой бд не должно быть повторяющихся blockNumber, gasUsed, gas, value")
+                        pprint("запись существовала " + str(aaaa['blockNumber']))
+                        pprint(
+                            "Проверка индексов в БД. при новом запуске чистой бд не должно быть повторяющихся blockNumber, gasUsed, gas, value")
                         pprint("Значит значение не уникальное")
                         pprint("Переписать индексы")
                         exit()
 
             pprint("BLOCK END: " + str((time.time() - start_time_get_block)))
-
-
-
-
-
-
 
         self.stdout.write(self.style.SUCCESS('Successfully closed poll'))
