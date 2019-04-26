@@ -8,9 +8,13 @@ class Block(models.Model):
     extraData = models.CharField(max_length=256)
 
 class Transaction(models.Model):
-    blockNumber = models.CharField(max_length=256)
-    status = models.IntegerField(default=0)
+    blockNumber = models.IntegerField()
+    transactionIndex = models.IntegerField(blank=True, null=True)
+
+    status = models.IntegerField(blank=True, null=True)
     blockHash = models.CharField(max_length=256)
+
+    contractAddress = models.CharField(max_length=256,db_index=True,blank=True, null=True)
     tx = models.CharField(max_length=256)
     addr_from = models.CharField(max_length=256,db_index=True)
     addr_to = models.CharField(max_length=256,db_index=True)
@@ -23,8 +27,9 @@ class Transaction(models.Model):
     input_text = models.CharField(max_length=256)
     value = models.FloatField(blank=True, null=True)
     timestamp = models.IntegerField(default=0)
+
     class Meta:
-        index_together = ["blockNumber", "gasUsed", "gas", "value"]
+        index_together = ["blockNumber", "transactionIndex"]
 
 
 

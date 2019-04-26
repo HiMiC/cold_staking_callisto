@@ -5,7 +5,7 @@ services:
     container_name: gethnode
     build: ./gethnode
     working_dir: /root
-    command: /usr/local/bin/geth --syncmode "full" --rpc --rpcaddr 0.0.0.0 --rpcport 8545 -rpcapi="db,eth,net,web3,personal" --rpccorsdomain="" --rpcvhosts "*" --wsaddr 0.0.0.0 --wsport 8546 --wsapi="db,eth,net,web3,personal" --verbosity 9
+    command: /usr/local/bin/geth --syncmode "full" --gcmode=archive --rpc --rpcaddr 0.0.0.0 --rpcport 8545 -rpcapi="db,eth,net,web3,personal,admin,debug" --rpccorsdomain="" --rpcvhosts "*" --wsaddr 0.0.0.0 --wsport 8546 --wsapi="db,eth,net,web3,personal" --verbosity 9
     volumes:
       - ./counteiner_data/geth:/root/.callisto
     networks:
@@ -24,6 +24,8 @@ services:
       MYSQL_USER: 'clo_statistic'
       MYSQL_PASSWORD: 'clo_statistic'
       MYSQL_ROOT_PASSWORD: 'password'
+    volumes:
+      - ./counteiner_data/mysqldir:/var/lib/mysql/:rw
     networks:
       - front
     ports:

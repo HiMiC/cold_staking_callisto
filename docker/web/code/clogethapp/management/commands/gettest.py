@@ -69,12 +69,33 @@ class Command(BaseCommand):
         i = 0
         i2 = 0
         block_first = 1400000
-        # block_first = 1826493 #остановил
         block_last = w3.eth.blockNumber
         block_count = block_last - block_first
         debug = 1
         debug2 = 0
 
+        aaaa = w3.eth.getTransactionReceipt('0x6ba2d7f8a25d0291e5cd774d09a8f1b1b3b5b9455c6dc3c970a8447f2e692979')
+        aaaa = dict(aaaa)
+        pprint(aaaa)
+        bbbb = w3.eth.getTransaction('0x6ba2d7f8a25d0291e5cd774d09a8f1b1b3b5b9455c6dc3c970a8447f2e692979')
+        bbbb = dict(bbbb)
+        pprint(bbbb)
+
+        pprint(w3.toChecksumAddress('0xae555ddf81a00061716f0b50a4ad5f2449c42bb1'))
+        pprint(w3.eth.getBalance(w3.toChecksumAddress('0xae555ddf81a00061716f0b50a4ad5f2449c42bb1')))
+        # pprint(w3.eth.getBalance(w3.toChecksumAddress('0xae555ddf81a00061716f0b50a4ad5f2449c42bb1'),1593176))
+        r, r2 = w3.manager.request_blocking( "eth_getBalance",[w3.toChecksumAddress('0xae555ddf81a00061716f0b50a4ad5f2449c42bb1'), 1593176],)
+        pprint(r)
+        pprint(r2)
+
+        # pprint(w3.fromWei(w3.eth.getBalance(w3.toChecksumAddress('0xae555ddf81a00061716f0b50a4ad5f2449c42bb1')), 'ether'))
+
+        # pprint(w3.eth.getBalance('0xae555ddf81a00061716f0b50a4ad5f2449c42bb1', 1415068))
+        # pprint(w3.eth.getBalance('0xae555ddf81a00061716f0b50a4ad5f2449c42bb1', 1593172))
+        # pprint(w3.eth.getBalance('0xae555ddf81a00061716f0b50a4ad5f2449c42bb1', 1593176))
+
+
+        exit()
         for x in range(block_first, w3.eth.blockNumber):
 
             pprint(str(round((i / block_count * 100),2))+"%")
