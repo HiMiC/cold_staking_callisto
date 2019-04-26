@@ -15,6 +15,7 @@ import json
 import datetime
 from hexbytes import HexBytes
 from eth_utils import decode_hex
+import time
 
 
 # https://github.com/rabbit10086/allproject/blob/c21a0fd4a0b28f3d548c8ffed7b47fb3783eea73/IDCG_Auto/idcm/ethtes.py
@@ -58,13 +59,6 @@ class Command(BaseCommand):
             exit("Синхронизируется блокчейн")
 
 
-            # s = eth.syncing
-            # "\n------------ GETH SYNCING PROGRESS\nprogress: " + (
-            #             s.currentBlock / s.highestBlock * 100) + " %\nblocks left to parse: " + (
-            #             s.highestBlock - s.currentBlock) + "\ncurrent Block: " + s.currentBlock + " of " + s.highestBlock
-
-
-
 # Хардфорк появится на блоке №1400000 в период с 11 по 12 ноября.
 # Поэтому нет смысла перебирать другие блоки
 #         pprint(w3.eth.getBlock(1400000))
@@ -79,21 +73,28 @@ class Command(BaseCommand):
         block_count = block_last - block_first
 
         for x in range(block_first, w3.eth.blockNumber):
-            pprint(str(round((i / block_count * 100),2))+"%")
+            # pprint(str(round((i / block_count * 100),2))+"%")
             i = i + 1
             # print(str(x) + " из " + str(block_last))
+            start_time_get_block = time.time()
             getblock = w3.eth.getBlock(x)
+            pprint("BLOCK start_time_get_block: " + str((time.time() - start_time_get_block)))
             # pprint(block)
             # pprint(block['extraData'])
             # pprint(Web3.toText(block['extraData']))
             # pprint(block['transactions'].count)
             for trx_hash in getblock['transactions']:
                 # pprint(x2)
+                start_time_get_transaction_aaaa = time.time()
                 aaaa = w3.eth.getTransactionReceipt(trx_hash)
+                pprint("TX start_time_get_transaction_aaaa: " + str((time.time() - start_time_get_transaction_aaaa)))
                 aaaa = dict(aaaa)
                 # pprint(aaaa)
-                # aaaa = w3.eth.getTransactionReceipt(trx_hash)
+
+                start_time_get_transaction_bbbb = time.time()
                 bbbb = w3.eth.getTransaction(trx_hash)
+                pprint("TX start_time_get_transaction_bbbb: " + str((time.time() - start_time_get_transaction_bbbb)))
+
                 bbbb = dict(bbbb)
                 input_text = ''
                 if aaaa['from'] == '0xd813419749b3c2cdc94a2f9cfcf154113264a9d6' or aaaa[
@@ -118,24 +119,72 @@ class Command(BaseCommand):
                     if bbbb['input'] == '0xcd948855':
                         input_text = 'Withdraw (Stake deposit + Reward)'
 
-                    created2 = Transaction.objects.get_or_create(
-                        blockNumber=aaaa['blockNumber'],
-                        blockHash='0x' + str(binascii.b2a_hex(aaaa['blockHash'])).replace("b'", '').replace("'",
-                                                                                                            ''),
-                        tx='0x' + str(binascii.b2a_hex(aaaa['transactionHash'])).replace("b'",
-                                                                                         '').replace(
-                            "'", ''),
-                        addr_from=aaaa['from'],
-                        addr_to=aaaa['to'],
-                        gasUsed=aaaa['gasUsed'],
-                        gas=bbbb['gas'],
-                        gasPrice=bbbb['gasPrice'],
-                        input=bbbb['input'],
-                        input_text=input_text,
-                        value=str(w3.fromWei(bbbb['value'], 'ether')),
-                        # timestamp=w3.eth.getBlock(aaaa['blockNumber']).timestamp,
-                        timestamp=getblock.timestamp,
-                    )
+                    start_time_get_or_create = time.time()
+                    obj, created = Transaction.objects.get_or_create(blockNumber=aaaa['blockNumber'],
+                                                                     gasUsed=aaaa['gasUsed'],
+                                                                     gas=bbbb['gas'],
+                                                                     value=str(w3.fromWei(bbbb['value'], 'ether')),
+                                                                         )
+                    pprint("БД проверка записи: " + str((time.time() - start_time_get_or_create)))
+
+
+                    if created:
+                        pprint("запись не существовала " + str(aaaa['blockNumber']))
+                        start_time_created = time.time()
+
+                        obj.blockNumber=aaaa['blockNumber']
+                        obj.status=aaaa['status']
+                        obj.blockHash='0x' + str(binascii.b2a_hex(aaaa['blockHash'])).replace("b'", '').replace("'",
+                                                                                                                '')
+                        obj.tx='0x' + str(binascii.b2a_hex(aaaa['transactionHash'])).replace("b'",'').replace(
+                                "'", '')
+                        obj.addr_from=aaaa['from']
+                        obj.addr_to=aaaa['to']
+                        obj.gasUsed=aaaa['gasUsed']
+                        obj.gas=bbbb['gas']
+                        obj.gasPrice=bbbb['gasPrice']
+                        obj.input=bbbb['input']
+                        obj.input_text=input_text
+                        obj.value=str(w3.fromWei(bbbb['value'], 'ether'))
+                        obj.timestamp=getblock.timestamp
+                        obj.save()
+                        #
+                        pprint("БД сохранение записи: " + str((time.time() - start_time_created)))
+                    else:
+                        pprint("запись существовала "+ str(aaaa['blockNumber']))
+
+                    # exit(123)
+
+
+
+                    # print("--- %s seconds ---" % (time.time() - start_time))
+                    # pprint(aaaa)
+                    # pprint(bbbb)
+                    # created2 = Transaction.objects.get_or_create(
+                    #     blockNumber=aaaa['blockNumber'],
+                    #     status=aaaa['status'],
+                    #     blockHash='0x' + str(binascii.b2a_hex(aaaa['blockHash'])).replace("b'", '').replace("'",
+                    #                                                                                         ''),
+                    #     tx='0x' + str(binascii.b2a_hex(aaaa['transactionHash'])).replace("b'",
+                    #                                                                      '').replace(
+                    #         "'", ''),
+                    #     addr_from=aaaa['from'],
+                    #     addr_to=aaaa['to'],
+                    #     gasUsed=aaaa['gasUsed'],
+                    #     gas=bbbb['gas'],
+                    #     gasPrice=bbbb['gasPrice'],
+                    #     input=bbbb['input'],
+                    #     input_text=input_text,
+                    #     value=str(w3.fromWei(bbbb['value'], 'ether')),
+                    #     # timestamp=w3.eth.getBlock(aaaa['blockNumber']).timestamp,
+                    #     timestamp=getblock.timestamp,
+                    # )
+
+                    # pprint(str('0x' + str(binascii.b2a_hex(aaaa['blockHash'])).replace("b'", '').replace("'",
+                    #                                                                                         '')))
+                    # pprint(str(w3.fromWei(bbbb['value'], 'ether')))
+
+                    # exit()
                     # i2 = i2 + 1
                     # pprint(str(i) + ' ' + str(i2) + ' '
                     #        # + str(w3.eth.getBlock(aaaa['blockNumber']).timestamp)
