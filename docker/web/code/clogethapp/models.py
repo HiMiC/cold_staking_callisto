@@ -12,8 +12,8 @@ class Transaction(models.Model):
     status = models.IntegerField(default=0)
     blockHash = models.CharField(max_length=256)
     tx = models.CharField(max_length=256)
-    addr_from = models.CharField(max_length=256)
-    addr_to = models.CharField(max_length=256)
+    addr_from = models.CharField(max_length=256,db_index=True)
+    addr_to = models.CharField(max_length=256,db_index=True)
 
     gasUsed = models.IntegerField(blank=True, null=True)
     gas = models.IntegerField(blank=True, null=True)

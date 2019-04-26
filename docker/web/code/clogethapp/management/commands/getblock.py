@@ -73,12 +73,13 @@ class Command(BaseCommand):
         block_count = block_last - block_first
 
         for x in range(block_first, w3.eth.blockNumber):
-            # pprint(str(round((i / block_count * 100),2))+"%")
+
+            pprint(str(round((i / block_count * 100),2))+"%")
             i = i + 1
             # print(str(x) + " из " + str(block_last))
             start_time_get_block = time.time()
             getblock = w3.eth.getBlock(x)
-            pprint("BLOCK start_time_get_block: " + str((time.time() - start_time_get_block)))
+            pprint("BLOCK get_block: " + str((time.time() - start_time_get_block)))
             # pprint(block)
             # pprint(block['extraData'])
             # pprint(Web3.toText(block['extraData']))
@@ -152,65 +153,17 @@ class Command(BaseCommand):
                         pprint("БД сохранение записи: " + str((time.time() - start_time_created)))
                     else:
                         pprint("запись существовала "+ str(aaaa['blockNumber']))
+                        pprint("Проверка индексов в БД. при новом запуске чистой бд не должно быть повторяющихся blockNumber, gasUsed, gas, value")
+                        pprint("Значит значение не уникальное")
+                        pprint("Переписать индексы")
+                        exit()
 
-                    # exit(123)
-
-
-
-                    # print("--- %s seconds ---" % (time.time() - start_time))
-                    # pprint(aaaa)
-                    # pprint(bbbb)
-                    # created2 = Transaction.objects.get_or_create(
-                    #     blockNumber=aaaa['blockNumber'],
-                    #     status=aaaa['status'],
-                    #     blockHash='0x' + str(binascii.b2a_hex(aaaa['blockHash'])).replace("b'", '').replace("'",
-                    #                                                                                         ''),
-                    #     tx='0x' + str(binascii.b2a_hex(aaaa['transactionHash'])).replace("b'",
-                    #                                                                      '').replace(
-                    #         "'", ''),
-                    #     addr_from=aaaa['from'],
-                    #     addr_to=aaaa['to'],
-                    #     gasUsed=aaaa['gasUsed'],
-                    #     gas=bbbb['gas'],
-                    #     gasPrice=bbbb['gasPrice'],
-                    #     input=bbbb['input'],
-                    #     input_text=input_text,
-                    #     value=str(w3.fromWei(bbbb['value'], 'ether')),
-                    #     # timestamp=w3.eth.getBlock(aaaa['blockNumber']).timestamp,
-                    #     timestamp=getblock.timestamp,
-                    # )
-
-                    # pprint(str('0x' + str(binascii.b2a_hex(aaaa['blockHash'])).replace("b'", '').replace("'",
-                    #                                                                                         '')))
-                    # pprint(str(w3.fromWei(bbbb['value'], 'ether')))
-
-                    # exit()
-                    # i2 = i2 + 1
-                    # pprint(str(i) + ' ' + str(i2) + ' '
-                    #        # + str(w3.eth.getBlock(aaaa['blockNumber']).timestamp)
-                    #        + str(w3.eth.blockNumber) + ' '
-                    #        + str(datetime.datetime.fromtimestamp(
-                    #     w3.eth.getBlock(aaaa['blockNumber']).timestamp).isoformat())
-                    #        + ' ' + str(w3.fromWei(bbbb['value'], 'ether')))
-                    #
-                    # pprint(aaaa)
-                    # pprint('Адрес контракта')
-                    # exit()
+            pprint("BLOCK END: " + str((time.time() - start_time_get_block)))
 
 
-        # block=w3.eth.getBlock("0x246dbee1f0e3be212be2a4ca899a04924b78ae65b775132f301271dce7e1bd84")
-        # # pprint(block)
-        # pprint(block['extraData'])
-        # pprint(Web3.toText(block['extraData']))
 
-        # r =  w3.eth.getTransactionReceipt('0x66a81192b75703f9b983d0ac9bb61066aabc61c4048dfcdd44a649acae0b71fa')
-        # r = dict(r)
-        # # pprint(r)
-        # logs = r['logs']
-        # pprint(logs[0]['data'])
-        # pprint(Web3.toText(r['logsBloom']))
-        #
-        # exit()
+
+
 
 
         self.stdout.write(self.style.SUCCESS('Successfully closed poll'))
