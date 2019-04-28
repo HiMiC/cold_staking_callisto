@@ -233,3 +233,4 @@ def getDifficulty(hashes):
 
     # return str(Decimal(result).normalize()) + ' ' + unit + 'H'
     return str('{0:.2f}'.format(result).rstrip('0').rstrip('.')) + ' ' + unit + 'H'
+
