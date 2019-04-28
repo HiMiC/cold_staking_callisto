@@ -48,7 +48,7 @@ def post_home(request):
 
     difficulty = w3.eth.getBlock(w3.eth.blockNumber).difficulty
 
-    block_height = w3.eth.syncing.highestBlock
+    # block_height = w3.eth.blockNumber
 
     addr_cs = '0xd813419749b3c2cdc94a2f9cfcf154113264a9d6'
     addr_cs_balance = w3.fromWei(w3.eth.getBalance(w3.toChecksumAddress(addr_cs)), 'ether')
