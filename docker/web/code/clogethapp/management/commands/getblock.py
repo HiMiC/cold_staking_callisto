@@ -75,10 +75,10 @@ class Command(BaseCommand):
 
             procent = str(round((w3.eth.syncing.currentBlock / w3.eth.syncing.highestBlock * 100), 2)) + "%"
 
-            exit(WARNING + "ОСТАНОВЛЕНО Синхронизируется блокчейн до текущего состояния: " + procent
-                 +" - "+str(w3.eth.syncing.currentBlock) +" из "
-                 + str(w3.eth.syncing.highestBlock)
-                 +ENDC)
+            # exit(WARNING + "ОСТАНОВЛЕНО Синхронизируется блокчейн до текущего состояния: " + procent
+            #      +" - "+str(w3.eth.syncing.currentBlock) +" из "
+            #      + str(w3.eth.syncing.highestBlock)
+            #      +ENDC)
 
         # Хардфорк появится на блоке №1400000 в период с 11 по 12 ноября.
         # Поэтому нет смысла перебирать другие блоки

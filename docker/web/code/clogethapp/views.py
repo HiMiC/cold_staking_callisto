@@ -27,7 +27,7 @@ def post_home(request):
     # sliders = SliderHome.objects.filter(is_enable=True).order_by('-published_date')[:4]
     # gallery = Photo.objects.all()[:4]
 
-    title = 'Callisto Network statistic'
+    title = 'Callisto Network Cold Staking'
     keywords = 'Callisto Network'
 
     geth_host = 'http://' + env('GETH_HOST', default='gethnode') + ':' + env('GETH_PORT', default='8545')
@@ -50,6 +50,14 @@ def post_home(request):
 
     block_height = w3.eth.syncing.highestBlock
 
+    addr_cs = '0xd813419749b3c2cdc94a2f9cfcf154113264a9d6'
+    addr_cs_balance = w3.fromWei(w3.eth.getBalance(w3.toChecksumAddress(addr_cs)), 'ether')
+    addr_cs_balance_1400000 = w3.fromWei(w3.eth.getBalance(w3.toChecksumAddress(addr_cs),1400000), 'ether')
+
+    get_last_transactions = Transaction.objects.all().order_by('-id')[:20]
+    # pprint(123)
+    # pprint(get_last_transactions)
+
     return render(request, 'home.html', {
         'title': title,
         'keywords': keywords,
@@ -57,6 +65,10 @@ def post_home(request):
         'difficulty': difficulty,
         'block_time': block_time,
         'hashrate': hashrate,
+        'addr_cs': addr_cs,
+        'addr_cs_balance': addr_cs_balance,
+        'addr_cs_balance_1400000': addr_cs_balance_1400000,
+        'get_last_transactions': get_last_transactions,
     })
 
 
@@ -70,8 +82,6 @@ def block_list(request, pk):
 
 
 def block(request, pk):
-    title = 'Главная - owasp.ru'
-    keywords = 'owasp'
     geth_host = 'http://' + env('GETH_HOST', default='gethnode') + ':' + env('GETH_PORT', default='8545')
     w3 = Web3(HTTPProvider(geth_host))
     if w3.isConnected() == False:
@@ -119,21 +129,33 @@ def block(request, pk):
     # exit()
 
 
+    title = 'Callisto Network | block ' + pk
+    keywords = 'block ' + pk
+
     return render(request, 'block.html', {
         'title': title,
         'keywords': keywords,
         'get_block': get_block,
         'get_transactions': get_transactions,
+
     })
 
 
 
 def tx(request, pk):
-    title = 'Главная - owasp.ru'
-    keywords = 'owasp'
-    return render(request, 'home.html', {
+
+    try:
+       get_tx = Transaction.objects.filter(tx=pk)
+    except Transaction.DoesNotExist:
+        raise Http404("Poll does not exist")
+
+    title = 'Callisto Network | transaction ' + pk
+    keywords = 'transaction ' + pk
+
+    return render(request, 'tx.html', {
         'title': title,
         'keywords': keywords,
+        'get_tx': get_tx,
     })
 
 
@@ -147,11 +169,32 @@ def tx_list(request, pk):
 
 
 def addr(request, pk):
-    title = 'Главная - owasp.ru'
-    keywords = 'owasp'
-    return render(request, 'home.html', {
+
+    pprint('поиск addr'+pk)
+    addr = pk
+    try:
+       get_addr = Transaction.objects.filter(addr_from=pk)
+    except Transaction.DoesNotExist:
+        raise Http404("Poll does not exist")
+
+    geth_host = 'http://' + env('GETH_HOST', default='gethnode') + ':' + env('GETH_PORT', default='8545')
+    w3 = Web3(HTTPProvider(geth_host))
+    if w3.isConnected() == False:
+        exit("Нет соединения с блокчейном " + geth_host)
+    else:
+        pprint("Успешно подключились к " + geth_host)
+    addr_balance = w3.fromWei(w3.eth.getBalance(w3.toChecksumAddress(addr)), 'ether')
+
+    title = 'Callisto Network | address ' + addr
+    keywords = 'address '+addr
+
+
+    return render(request, 'addr.html', {
         'title': title,
         'keywords': keywords,
+        'addr': addr,
+        'addr_balance': addr_balance,
+        'get_addr': get_addr,
     })
 
 

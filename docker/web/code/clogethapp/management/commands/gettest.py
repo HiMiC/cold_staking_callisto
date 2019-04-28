@@ -16,7 +16,9 @@ import datetime
 from hexbytes import HexBytes
 from eth_utils import decode_hex
 import time
-
+import environ
+env = environ.Env(DEBUG=(bool, False),)
+environ.Env.read_env('.env')
 
 # https://github.com/rabbit10086/allproject/blob/c21a0fd4a0b28f3d548c8ffed7b47fb3783eea73/IDCG_Auto/idcm/ethtes.py
 
@@ -50,14 +52,21 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         # pprint(w3.eth.blockNumber)
         # exit()
-        w3 = Web3(HTTPProvider('http://gethnode:8545'))
+        geth_host = 'http://' + env('GETH_HOST', default='gethnode') + ':' + env('GETH_PORT', default='8545')
+        w3 = Web3(HTTPProvider(geth_host))
 
         # if not w3.isConnected():
         if w3.isConnected() == False:
             exit("Нет соединения с блокчейном")
-        if w3.eth.syncing != False:
-            exit("Синхронизируется блокчейн")
+        # if w3.eth.syncing != False:
+        #     exit("Синхронизируется блокчейн")
 
+        pprint(w3.fromWei(w3.eth.getBalance(w3.toChecksumAddress('0x6ed881d812ebe3c081e22d96d45a3c9c30a6b616'),829330), 'ether'))
+        pprint(w3.fromWei(w3.eth.getBalance(w3.toChecksumAddress('0x6ed881d812ebe3c081e22d96d45a3c9c30a6b616'),1417623), 'ether'))
+        pprint(w3.fromWei(w3.eth.getBalance(w3.toChecksumAddress('0x6ed881d812ebe3c081e22d96d45a3c9c30a6b616'),1417624), 'ether'))
+        pprint(w3.fromWei(w3.eth.getBalance(w3.toChecksumAddress('0x6ed881d812ebe3c081e22d96d45a3c9c30a6b616'),1417625), 'ether'))
+
+        exit()
 
 # Хардфорк появится на блоке №1400000 в период с 11 по 12 ноября.
 # Поэтому нет смысла перебирать другие блоки
@@ -66,25 +75,25 @@ class Command(BaseCommand):
         # pprint(w3.eth.syncing.currentBlock)
         # pprint(w3.eth.syncing.highestBlock)
         # exit()
-        i = 0
-        i2 = 0
-        block_first = 1400000
-        block_last = w3.eth.blockNumber
-        block_count = block_last - block_first
-        debug = 1
-        debug2 = 0
+        # i = 0
+        # i2 = 0
+        # block_first = 1400000
+        # block_last = w3.eth.blockNumber
+        # block_count = block_last - block_first
+        # debug = 1
+        # debug2 = 0
 
-        aaaa = w3.eth.getTransactionReceipt('0x6ba2d7f8a25d0291e5cd774d09a8f1b1b3b5b9455c6dc3c970a8447f2e692979')
-        aaaa = dict(aaaa)
-        pprint(aaaa)
-        bbbb = w3.eth.getTransaction('0x6ba2d7f8a25d0291e5cd774d09a8f1b1b3b5b9455c6dc3c970a8447f2e692979')
-        bbbb = dict(bbbb)
-        pprint(bbbb)
+        # aaaa = w3.eth.getTransactionReceipt('0x6ba2d7f8a25d0291e5cd774d09a8f1b1b3b5b9455c6dc3c970a8447f2e692979')
+        # aaaa = dict(aaaa)
+        # pprint(aaaa)
+        # bbbb = w3.eth.getTransaction('0x6ba2d7f8a25d0291e5cd774d09a8f1b1b3b5b9455c6dc3c970a8447f2e692979')
+        # bbbb = dict(bbbb)
+        # pprint(bbbb)
 
-        pprint(w3.toChecksumAddress('0x0073cf1b9230cf3ee8cab1971b8dbef21ea7b595'))
-        pprint(w3.eth.getBalance(w3.toChecksumAddress('0x0073cf1b9230cf3ee8cab1971b8dbef21ea7b595')))
-        # pprint(w3.eth.getBalance(w3.toChecksumAddress('0xae555ddf81a00061716f0b50a4ad5f2449c42bb1'),1593176))
-        r, r2 = w3.manager.request_blocking( "eth_getBalance",[w3.toChecksumAddress('0x0073cf1b9230cf3ee8cab1971b8dbef21ea7b595'), 255683],)
+        pprint(w3.toChecksumAddress('0x6ed881d812ebe3c081e22d96d45a3c9c30a6b616'))
+        pprint(w3.eth.getBalance(w3.toChecksumAddress('0x6ed881d812ebe3c081e22d96d45a3c9c30a6b616')))
+        # pprint(w3.eth.getBalance(w3.toChecksumAddress('0x6ed881d812ebe3c081e22d96d45a3c9c30a6b616'),1593176))
+        r, r2 = w3.manager.request_blocking( "eth_getBalance",[w3.toChecksumAddress('0x6ed881d812ebe3c081e22d96d45a3c9c30a6b616'), 255683],)
         pprint(r)
         pprint(r2)
 

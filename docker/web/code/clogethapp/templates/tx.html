@@ -1,0 +1,69 @@
+{% extends 'base.html' %}
+{% load humanize %}
+{% load poll_extras %}
+
+{% block content %}
+
+
+<div class="container-fluid">
+<h1>Addr </h1>
+
+
+
+{% print get_tx %}
+
+
+<!--{% print get_transactions %}-->
+<h2>Transactions</h2>
+<table class="table table-striped table-bordered table-hover table-sm">
+  <thead>
+     <tr>
+            <th scope="col">tx</th>
+            <th scope="col">addr_from</th>
+            <th scope="col">addr_to</th>
+            <th scope="col">value</th>
+            <th scope="col">text</th>
+            <th scope="col">timestamp</th>
+
+        </tr>
+  </thead>
+ <tbody>
+        {% for trx in get_tx %}
+        <tr>
+            <th style="font-size: 12px; word-wrap: break-word;"><a href="/tx/{{trx.tx}}">{{trx.tx}}(<a
+                    href="/block/{{trx.blockNumber}}">{{trx.blockNumber}})</a></th>
+
+
+            <td style="font-size: 12px; word-wrap: break-word;">
+             {% if trx.addr_from == '0xd813419749b3c2cdc94a2f9cfcf154113264a9d6' %}
+                <div class="alert alert-success" role="alert">
+                    Cold Staking
+                </div>
+                {% else %}
+                <a href="/addr/{{trx.addr_from}}">{{trx.addr_from}}</a>
+                {% endif %}
+            </td>
+
+            <td style="font-size: 12px; word-wrap: break-word;">
+             {% if trx.addr_to == '0xd813419749b3c2cdc94a2f9cfcf154113264a9d6' %}
+                <div class="alert alert-success" role="alert">
+                    Cold Staking
+                </div>
+                {% else %}
+                <a href="/addr/{{trx.addr_to}}">{{trx.addr_to}}</a>
+                {% endif %}
+            </td>
+
+            <td style="font-size: 12px; word-wrap: break-word;">{{trx.value}}</td>
+            <td style="font-size: 12px; word-wrap: break-word;">{{trx.input_text}}</td>
+            <td style="font-size: 12px; word-wrap: break-word;">{{trx.timestamp|print_timestamp}}</td>
+        </tr>
+        {% endfor %}
+        </tbody>
+</table>
+</div>
+{% endblock content %}
+
+
+
+

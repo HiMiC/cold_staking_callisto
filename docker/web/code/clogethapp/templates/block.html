@@ -133,9 +133,9 @@
     </tr>
   </thead>
   <tbody>
-{% for sport in get_block.transactions %}
+{% for tx in get_block.transactions %}
     <tr>
-        <th><a href="/tx/{{sport.hex}}">{{sport.hex}}</a></th>
+        <th><a href="/tx/{{tx.hex}}">{{tx.hex}}</a></th>
     </tr>
 {% endfor %}
   </tbody>

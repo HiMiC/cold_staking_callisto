@@ -4,7 +4,7 @@
 
 {% block content %}
 
-<div class="container" style="background-color: #e5e5e5 !important;">
+<div class="container-fluid" style="background-color: #e5e5e5 !important;">
     <div class="row" style="margin-top:10px;margin-bottom:10px;">
 
         <div class="col-lg-3 col-md-3 col-sm-12 col-xs-12">
@@ -17,7 +17,8 @@
                                 <i class="fa fa-cube"></i>
                             </div>
                             <small>#</small>
-                            <span class="font-green-title"><a class="font-green-title" href="/block/{{block_height}}">{{block_height |intcomma}}</a></span>
+                            <span class="font-green-title"><a class="font-green-title" href="/block/{{block_height}}"
+                                                              target="_blank">{{block_height |intcomma}}</a></span>
                         </h3>
                     </div>
                 </div>
@@ -77,10 +78,71 @@
 
     </div>
 
-</div>
 
 </div>
 
+<div class="container">
+    <div class="row" style="margin-top:10px;margin-bottom:10px;">
+        <div class="col-lg-3 col-md-3 col-sm-12 col-xs-12">
+            <h4>Cold Staking balance</h4>
+            <p><a href="/addr/{{addr_cs}}" target="_blank">{{addr_cs}}</a></p>
+            <h4 class="alert alert-danger">{{addr_cs_balance|floatformat:2|intcomma}}</h4>
+        </div>
+    </div>
+</div>
+
+<div class="container-fluid">
+
+    <h2>Transactions last</h2>
+    <table class="table table-striped table-bordered table-hover table-sm" id="table_txs">
+        <thead>
+        <tr>
+            <th scope="col">tx</th>
+            <th scope="col">addr_from</th>
+            <th scope="col">addr_to</th>
+            <th scope="col">value</th>
+            <th scope="col">text</th>
+            <th scope="col">timestamp</th>
+
+        </tr>
+        </thead>
+        <tbody>
+        {% for trx in get_last_transactions %}
+        <tr>
+            <th style="font-size: 12px; word-wrap: break-word;"><a href="/tx/{{trx.tx}}">{{trx.tx}}(<a
+                    href="/block/{{trx.blockNumber}}">{{trx.blockNumber}})</a></th>
+
+
+            <td style="font-size: 12px; word-wrap: break-word;">
+             {% if trx.addr_from == '0xd813419749b3c2cdc94a2f9cfcf154113264a9d6' %}
+                <div class="alert alert-success" role="alert">
+                    Cold Staking
+                </div>
+                {% else %}
+                <a href="/addr/{{trx.addr_from}}">{{trx.addr_from}}</a>
+                {% endif %}
+            </td>
+
+            <td style="font-size: 12px; word-wrap: break-word;">
+             {% if trx.addr_to == '0xd813419749b3c2cdc94a2f9cfcf154113264a9d6' %}
+                <div class="alert alert-success" role="alert">
+                    Cold Staking
+                </div>
+                {% else %}
+                <a href="/addr/{{trx.addr_to}}">{{trx.addr_to}}</a>
+                {% endif %}
+            </td>
+
+            <td style="font-size: 12px; word-wrap: break-word;">{{trx.value}}</td>
+            <td style="font-size: 12px; word-wrap: break-word;">{{trx.input_text}}</td>
+            <td style="font-size: 12px; word-wrap: break-word;">{{trx.timestamp|print_timestamp}}</td>
+        </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+
+</div>
 
 {% endblock content %}
 
