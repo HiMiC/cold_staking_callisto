@@ -3,3 +3,4 @@ docker/counteiner_data/geth
 docker/counteiner_data/geth_old
 docker/counteiner_data/mysqldir
 docker/web/code/static
+docker/web/code/.env

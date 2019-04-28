@@ -1,0 +1,148 @@
+{% extends 'base.html' %}
+{% load humanize %}
+{% load poll_extras %}
+
+{% block content %}
+
+
+<div class="container-fluid">
+<h1>Block</h1>
+
+<table class="table">
+  <thead class="thead-light">
+    <tr>
+      <th scope="col">key</th>
+      <th scope="col">value</th>
+    </tr>
+  </thead>
+  <tbody>
+
+    <tr>
+      <td>difficulty</td>
+      <th>{{get_block.difficulty |intcomma}}</th>
+    </tr>
+
+    <tr>
+      <td>extraData</td>
+      <th>{{get_block.extraData}}</th>
+    </tr>
+
+    <tr>
+      <td>gasLimit</td>
+      <th>{{get_block.gasLimit |intcomma}}</th>
+    </tr>
+
+    <tr>
+      <td>gasUsed</td>
+      <th>{{get_block.gasUsed |intcomma}}</th>
+    </tr>
+
+    <tr>
+      <td>hash</td>
+      <th>{{get_block.hash.hex}}</th>
+    </tr>
+
+    <tr>
+      <td>logsBloom</td>
+      <th>{{get_block.logsBloom.hex}}</th>
+    </tr>
+
+    <tr>
+      <td>miner</td>
+      <th>{{get_block.miner}}</th>
+    </tr>
+
+    <tr>
+      <td>mixHash</td>
+      <th>{{get_block.mixHash.hex}}</th>
+    </tr>
+
+    <tr>
+      <td>nonce</td>
+      <th>{{get_block.nonce.hex}}</th>
+    </tr>
+
+    <tr>
+      <td>number</td>
+      <th>{{get_block.number}}</th>
+    </tr>
+
+    <tr>
+      <td>parentHash</td>
+      <th>{{get_block.parentHash.hex}}</th>
+    </tr>
+
+    <tr>
+      <td>receiptsRoot</td>
+      <th>{{get_block.receiptsRoot.hex}}</th>
+    </tr>
+
+    <tr>
+      <td>sha3Uncles</td>
+      <th>{{get_block.sha3Uncles.hex}}</th>
+    </tr>
+
+    <tr>
+      <td>size</td>
+      <th>{{get_block.size}}</th>
+    </tr>
+
+    <tr>
+      <td>stateRoot</td>
+      <th>{{get_block.stateRoot.hex}}</th>
+    </tr>
+
+    <tr>
+      <td>timestamp</td>
+      <th>{{get_block.timestamp|print_timestamp}}</th>
+    </tr>
+
+    <tr>
+      <td>totalDifficulty</td>
+      <th>{{get_block.totalDifficulty|getDifficulty}}</th>
+    </tr>
+
+    <tr>
+      <td>transactions</td>
+      <th>{{get_block.transactions}}</th>
+    </tr>
+
+    <tr>
+      <td>transactionsRoot</td>
+      <th>{{get_block.transactionsRoot.hex}}</th>
+    </tr>
+    <tr>
+      <td>uncles</td>
+      <th>{{get_block.uncles}}</th>
+    </tr>
+
+  </tbody>
+</table>
+
+
+
+{% print get_block %}
+
+
+<!--{% print get_transactions %}-->
+<h2>Transactions</h2>
+<table class="table table-striped table-bordered table-hover table-sm">
+  <thead>
+    <tr>
+      <th scope="col">#</th>
+    </tr>
+  </thead>
+  <tbody>
+{% for sport in get_block.transactions %}
+    <tr>
+        <th><a href="/tx/{{sport.hex}}">{{sport.hex}}</a></th>
+    </tr>
+{% endfor %}
+  </tbody>
+</table>
+</div>
+{% endblock content %}
+
+
+
+

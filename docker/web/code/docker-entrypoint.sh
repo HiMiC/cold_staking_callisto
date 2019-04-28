@@ -9,14 +9,10 @@
 echo "Collect static files"
 python manage.py collectstatic --noinput
 
+echo "Ждем 30 секунд запуска БД"
 # ждем пока БД загрузится
-sleep 30
-# Apply database migrations
-echo "Apply database migrations"
+#sleep 30
 python manage.py migrate
 
-
-#ping -n 3 db
-# Start server
 echo "Starting server"
 python manage.py runserver 0.0.0.0:8000

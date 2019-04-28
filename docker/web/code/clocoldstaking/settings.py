@@ -11,6 +11,16 @@ https://docs.djangoproject.com/en/2.0/ref/settings/
 """
 
 import os
+import environ
+
+root = environ.Path(__file__) - 3  # three folder back (/a/b/c/ - 3 = /)
+env = environ.Env(DEBUG=(bool, False), )  # set default values and casting
+environ.Env.read_env('.env')  # reading .env file
+
+# print()
+# print(env('SECRET_KEY', default=4545))
+# exit()
+# SITE_ROOT = root()
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -24,7 +34,7 @@ SECRET_KEY = '4t1zfog*@267_og-_yh12z218u0=p+9o^oasqdbh@pvs^*$5-j'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['127.0.0.1', 'localhost','0.0.0.0']
+ALLOWED_HOSTS = ['127.0.0.1', 'localhost', '0.0.0.0']
 
 # Application definition
 
@@ -35,6 +45,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+
+    'django.contrib.humanize',
     'debugtools',
     'clogethapp',
 ]
@@ -82,11 +94,16 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
         # "OPTIONS": {"read_default_file": "./my.cnf"},
-        'NAME': 'clo_statistic',
-        'USER': 'clo_statistic',
-        'PASSWORD': 'clo_statistic',
-        'HOST': 'db',  # Or an IP Address that your DB is hosted on
-        'PORT': '3306',
+        # 'NAME': 'clo_statistic',
+        # 'USER': 'clo_statistic',
+        # 'PASSWORD': 'clo_statistic',
+        # 'HOST': 'db',  # Or an IP Address that your DB is hosted on
+        # 'PORT': '3306',
+        'NAME': env('DB_NAME', default='clo_statistic'),
+        'USER': env('DB_USER', default='clo_statistic'),
+        'PASSWORD': env('DB_PASSWORD', default='clo_statistic'),
+        'HOST': env('DB_HOST', default='db'),  # Or an IP Address that your DB is hosted on
+        'PORT': env('DB_PORT', default=3306),
     }
 }
 
@@ -127,7 +144,8 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'static')
-STATICFILES_DIRS = (os.path.join(BASE_DIR, "sfiles"), )
+# STATICFILES_DIRS = (os.path.join(BASE_DIR, "sfiles"), )
+STATICFILES_DIRS = ()
 
 MEDIA_ROOT = os.path.join(BASE_DIR, "media")
 MEDIA_URL = '/media/'
@@ -136,10 +154,10 @@ ADMIN_MEDIA_PREFIX = '/media/admin/'
 
 TEMPLATE_DIRS = (os.path.join(BASE_DIR, 'templates'),)
 TEMPLATE_LOADERS = (
-'django.template.loaders.filesystem.Loader',
-'django.template.loaders.app_directories.Loader',
-'django.template.loaders.app_directories.load_template_source',)
+    'django.template.loaders.filesystem.Loader',
+    'django.template.loaders.app_directories.Loader',
+    'django.template.loaders.app_directories.load_template_source',)
 
 LOGIN_REDIRECT_URL = '/'
-#LOGOUT_URL=''
-#MEDIA_ROOT = '/home/user/mysite/media/'
+# LOGOUT_URL=''
+# MEDIA_ROOT = '/home/user/mysite/media/'
