@@ -56,7 +56,8 @@ class Command(BaseCommand):
         ENDC = '\033[0m'
         # pprint(w3.eth.blockNumber)
         # exit()
-        geth_host = 'http://'+env('GETH_HOST', default='gethnode')+':'+env('GETH_PORT', default='8545')
+        # geth_host = 'http://'+env('GETH_HOST', default='gethnode')+':'+env('GETH_PORT', default='8545')
+        geth_host = 'http://gethnode:8545/'
         # geth_host = 'http://95.129.164.103:8545'
         # geth_host = 'http://192.168.1.150:8545'
         w3 = Web3(HTTPProvider(geth_host))

@@ -5,8 +5,8 @@ services:
     container_name: gethnode
     build: ./gethnode
     working_dir: /root
-    command: /usr/local/bin/geth --cache 2048 --syncmode fast --rpc --rpcaddr 0.0.0.0 --rpcport 8545 -rpcapi="db,eth,net,web3,personal,admin,debug" --rpccorsdomain="" --rpcvhosts "*" --wsaddr 0.0.0.0 --wsport 8546 --wsapi="db,eth,net,web3,personal"
-#    command: /usr/local/bin/geth --cache 2048 --syncmode full --gcmode archive --rpc --rpcaddr 0.0.0.0 --rpcport 8545 -rpcapi="db,eth,net,web3,personal,admin,debug" --rpccorsdomain="" --rpcvhosts "*" --wsaddr 0.0.0.0 --wsport 8546 --wsapi="db,eth,net,web3,personal"
+#    command: /usr/local/bin/geth --cache 2048 --syncmode fast --rpc --rpcaddr 0.0.0.0 --rpcport 8545 -rpcapi="db,eth,net,web3,personal,admin,debug" --rpccorsdomain="" --rpcvhosts "*"
+    command: /usr/local/bin/geth --cache 2048 --syncmode full --gcmode archive --rpc --rpcaddr 0.0.0.0 --rpcport 8545 -rpcapi="db,eth,net,web3,personal,admin,debug" --rpccorsdomain="" --rpcvhosts "*"
     volumes:
       - ./counteiner_data/geth:/root/.callisto
     networks:
@@ -40,9 +40,11 @@ services:
       - ./web/code/:/code
     ports:
       - 8000:8000
+    links:
+      - gethnode
     depends_on:
       - db
-#      - gethnode
+      - gethnode
     networks:
       - front
 
