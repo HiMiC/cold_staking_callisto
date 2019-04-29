@@ -1,5 +1,5 @@
 from django.core.management.base import BaseCommand, CommandError
-from clogethapp.models import Account
+from clogethapp.models import Csbalance
 import urllib.request
 import json
 from pprint import pprint
@@ -53,12 +53,14 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
 
+        cs_addr = '0xd813419749b3c2cdc94a2f9cfcf154113264a9d6'
+
         WARNING = '\033[93m'
         FAIL = '\033[91m'
         ENDC = '\033[0m'
         # pprint(w3.eth.blockNumber)
         # exit()
-        geth_host = 'http://'+env('GETH_HOST', default='gethnode')+':'+env('GETH_PORT', default='8545')
+        geth_host = 'http://' + env('GETH_HOST', default='gethnode') + ':' + env('GETH_PORT', default='8545')
         # geth_host = 'http://gethnode:8545/'
         # geth_host = 'http://95.129.164.103:8545'
         # geth_host = 'http://192.168.1.150:8545'
@@ -89,13 +91,12 @@ class Command(BaseCommand):
 
         i = 0
         # если база не пустая то берем последний блок
-        if Account.objects.all().count():
-            f_first = Account.objects.order_by('blockNumber').reverse()[0]
+        if Csbalance.objects.all().count():
+            f_first = Csbalance.objects.order_by('blockNumber').reverse()[0]
             pprint("Последняя запись в базе " + str(f_first.blockNumber))
             block_first = f_first.blockNumber
         else:
-            block_first = 0
-            # block_first = 1
+            block_first = 1400000
 
         pprint(str(block_first) + " - Первый блок для парсинга")
         # block_first = 1826493 #остановил
@@ -104,64 +105,42 @@ class Command(BaseCommand):
         block_count = block_last - block_first
         if block_last <= block_first:
             pprint("Синхронизация не возможна. Блокчейн (блок (" + str(
-                block_last) + ") не синхронизировался до блока " + str(block_first))
+                block_last) + ") не синхронизировался до блока " + str(block_first) + " Осталось " + str(block_count))
 
-        debug = 0
-        debug2 = 0
+        debug = 1
 
         for x in range(block_first, w3.eth.blockNumber):
-
-            pprint(str(round((i / block_count * 100), 2)) + "%")
-            i = i + 1
-            # print(str(x) + " из " + str(block_last))
             start_time_get_block = time.time()
-            getblock = w3.eth.getBlock(x)
-            if debug2:
-                pprint("BLOCK get_block: " + str((time.time() - start_time_get_block)))
+            start_time_get_or_create = time.time()
 
-            for trx_hash in getblock['transactions']:
-                # pprint(x2)
-                start_time_get_transaction_aaaa = time.time()
-                aaaa = w3.eth.getTransactionReceipt(trx_hash)
-                if debug2:
-                    pprint(
-                        "TX start_time_get_transaction_aaaa: " + str((time.time() - start_time_get_transaction_aaaa)))
-                aaaa = dict(aaaa)
-                # pprint(aaaa)
+            obj, created = Csbalance.objects.get_or_create(blockNumber=x)
+            if created:
+                balance = w3.fromWei(w3.eth.getBalance(w3.toChecksumAddress(cs_addr), x), 'ether')
+                if debug:
+                    pprint("block: " + str(x))
+                    pprint(str(balance))
+                    # exit()
+                obj.balance = balance
+                obj.save()
+
+            # obj2, created2 = Csbalance.objects.get_or_create(blockNumber=x)
+            # if created2:
+            #     if debug:
+            #         pprint("запись не существовала " + str(x))
+            #     obj2.balance = w3.fromWei(w3.eth.getBalance(w3.toChecksumAddress(cs_addr)), 'ether')
+            #     obj2.save()
+
+            # else:
+            #     obj.blockNumber = aaaa['blockNumber']
+            #     obj.save()
+
+            if debug:
+                pprint("БД проверка записи: " + str((time.time() - start_time_get_or_create)))
+
+                #
+
                 # exit()
-                start_time_get_or_create = time.time()
 
-                obj, created = Account.objects.get_or_create(addr=aaaa['from'])
-                if created:
-                    if debug:
-                        pprint("1запись не существовала " + str(aaaa['blockNumber']) + " " + aaaa['from'])
-                    obj.balance = w3.fromWei(w3.eth.getBalance(w3.toChecksumAddress(aaaa['from'])), 'ether')
-                    obj.blockNumber = x
-                    obj.type = aaaa['contractAddress']
-                    obj.save()
-
-                # else:
-                # pprint("1запись1  существовала " + str(obj.balance) + " " + str(x)+" "+aaaa['from'])
-                # obj.balance = w3.fromWei(w3.eth.getBalance(w3.toChecksumAddress(aaaa['from'])), 'ether')
-                # obj.blockNumber = x
-                # obj.type = aaaa['contractAddress']
-                # obj.save()
-
-                obj2, created2 = Account.objects.get_or_create(addr=aaaa['to'])
-                if created2:
-                    if debug:
-                        pprint("2запись не существовала " + str(aaaa['blockNumber']) + " " + aaaa['to'])
-                    obj2.balance = w3.fromWei(w3.eth.getBalance(w3.toChecksumAddress(aaaa['to'])), 'ether')
-                    obj2.blockNumber = x
-                    obj2.type = aaaa['contractAddress']
-                    obj2.save()
-                # else:
-                #     pprint("2запись2  существовала " + str(aaaa['blockNumber']) +" "+aaaa['to'])
-                # obj2.balance = w3.fromWei(w3.eth.getBalance(w3.toChecksumAddress(aaaa['to'])), 'ether')
-                # obj2.blockNumber = x
-                # obj2.type = aaaa['contractAddress']
-                # obj2.save()
-
-            pprint("BLOCK " + str(x) + " END : " + str((time.time() - start_time_get_block)))
+            pprint("BLOCK " + str(x) + " END: " + str((time.time() - start_time_get_block)))
 
         self.stdout.write(self.style.SUCCESS('Successfully closed poll'))

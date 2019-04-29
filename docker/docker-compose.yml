@@ -44,7 +44,7 @@ services:
       - gethnode
     depends_on:
       - db
-      - gethnode
+#      - gethnode
     networks:
       - front
 

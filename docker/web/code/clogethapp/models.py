@@ -8,7 +8,13 @@ class Block(models.Model):
     extraData = models.CharField(max_length=256)
 
 class Account(models.Model):
-    addr = models.CharField(max_length=42)
+    addr = models.CharField(max_length=42,db_index=True)
+    balance = models.FloatField(blank=True, null=True)
+    type = models.CharField(max_length=256,blank=True, null=True)
+    blockNumber = models.IntegerField(blank=True, null=True)
+
+class Csbalance(models.Model):
+    blockNumber = models.IntegerField(db_index=True)
     balance = models.FloatField(blank=True, null=True)
     type = models.CharField(max_length=256)
 

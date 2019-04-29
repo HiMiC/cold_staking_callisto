@@ -17,8 +17,10 @@ from hexbytes import HexBytes
 from eth_utils import decode_hex
 import time
 import environ
-env = environ.Env(DEBUG=(bool, False),)
+
+env = environ.Env(DEBUG=(bool, False), )
 environ.Env.read_env('.env')
+
 
 # https://github.com/rabbit10086/allproject/blob/c21a0fd4a0b28f3d548c8ffed7b47fb3783eea73/IDCG_Auto/idcm/ethtes.py
 
@@ -56,7 +58,8 @@ class Command(BaseCommand):
         ENDC = '\033[0m'
         # pprint(w3.eth.blockNumber)
         # exit()
-        geth_host = 'http://'+env('GETH_HOST', default='gethnode')+':'+env('GETH_PORT', default='8545')
+        geth_host = 'http://' + env('GETH_HOST', default='gethnode') + ':' + env('GETH_PORT', default='8545')
+        # geth_host = 'http://gethnode:8545'
         # geth_host = 'http://95.129.164.103:8545'
         # geth_host = 'http://192.168.1.150:8545'
         w3 = Web3(HTTPProvider(geth_host))
@@ -76,9 +79,9 @@ class Command(BaseCommand):
             procent = str(round((w3.eth.syncing.currentBlock / w3.eth.syncing.highestBlock * 100), 2)) + "%"
 
             exit(WARNING + "ОСТАНОВЛЕНО Синхронизируется блокчейн до текущего состояния: " + procent
-                 +" - "+str(w3.eth.syncing.currentBlock) +" из "
+                 + " - " + str(w3.eth.syncing.currentBlock) + " из "
                  + str(w3.eth.syncing.highestBlock)
-                 +ENDC)
+                 + ENDC)
 
         # Хардфорк появится на блоке №1400000 в период с 11 по 12 ноября.
         # Поэтому нет смысла перебирать другие блоки
@@ -88,7 +91,7 @@ class Command(BaseCommand):
         # если база не пустая то берем последний блок
         if Transaction.objects.all().count():
             f_first = Transaction.objects.order_by('blockNumber').reverse()[0]
-            pprint("Последняя запись в базе "+str(f_first.blockNumber))
+            pprint("Последняя запись в базе " + str(f_first.blockNumber))
             block_first = f_first.blockNumber
         else:
             block_first = 1400000
@@ -97,7 +100,7 @@ class Command(BaseCommand):
         pprint(str(block_first) + " - Первый блок для парсинга")
         # block_first = 1826493 #остановил
         block_last = w3.eth.blockNumber
-        pprint(str(block_last) + " - Текщий блок ")
+        pprint(str(block_last) + " - Текущий блок ")
         block_count = block_last - block_first
         if block_last <= block_first:
             pprint("Синхронизация не возможна. Блокчейн (блок (" + str(
@@ -253,6 +256,6 @@ class Command(BaseCommand):
                         pprint("Переписать индексы")
                         # exit()
 
-            pprint("BLOCK END: " + str((time.time() - start_time_get_block)))
+            pprint("BLOCK " + str(x) + " END: " + str((time.time() - start_time_get_block)))
 
         self.stdout.write(self.style.SUCCESS('Successfully closed poll'))
