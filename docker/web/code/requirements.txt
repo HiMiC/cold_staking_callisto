@@ -16,7 +16,7 @@ eth-rlp==0.1.2
 eth-typing==2.1.0
 eth-utils==1.4.1
 hexbytes==0.1.0
-idna==2.8
+idna==3.7
 lru-dict==1.1.6
 mysqlclient==1.4.6
 parsimonious==0.8.1
